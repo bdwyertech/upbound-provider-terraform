@@ -19,6 +19,7 @@ package v1beta1
 import (
 	xpv1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
 // A Var represents a configuration variable.
@@ -112,6 +113,10 @@ type WorkspaceParameters struct {
 	// Environment variables.
 	// +optional
 	Env []Var `json:"env,omitempty"`
+
+	// Terraform Variable Map
+	// +optional
+	VarMap *runtime.RawExtension `json:"varmap,omitempty"`
 
 	// Files of configuration variables. Explicitly declared vars take
 	// precedence.
