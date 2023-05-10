@@ -123,7 +123,7 @@ func TestConnect(t *testing.T) {
 		kube      client.Client
 		usage     resource.Tracker
 		fs        afero.Afero
-		terraform func(dir string) tfclient
+		terraform func(dir string, envs ...string) tfclient
 	}
 
 	type args struct {
@@ -215,7 +215,7 @@ func TestConnect(t *testing.T) {
 				},
 				usage: resource.TrackerFn(func(_ context.Context, _ resource.Managed) error { return nil }),
 				fs:    afero.Afero{Fs: afero.NewMemMapFs()},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockInit: func(ctx context.Context, cache bool, o ...terraform.InitOption) error { return nil },
 					}
@@ -254,7 +254,7 @@ func TestConnect(t *testing.T) {
 						errs: map[string]error{filepath.Join(tfDir, string(uid), tfCreds): errBoom},
 					},
 				},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockInit: func(ctx context.Context, cache bool, o ...terraform.InitOption) error { return nil },
 					}
@@ -293,7 +293,7 @@ func TestConnect(t *testing.T) {
 						errs: map[string]error{filepath.Join(tfDir, string(uid), "subdir", tfCreds): errBoom},
 					},
 				},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockInit: func(ctx context.Context, cache bool, o ...terraform.InitOption) error { return nil },
 					}
@@ -337,7 +337,7 @@ func TestConnect(t *testing.T) {
 						errs: map[string]error{filepath.Join("/tmp", tfDir, string(uid), ".git-credentials"): errBoom},
 					},
 				},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockInit: func(ctx context.Context, cache bool, o ...terraform.InitOption) error { return nil },
 					}
@@ -380,7 +380,7 @@ func TestConnect(t *testing.T) {
 						errs: map[string]error{filepath.Join("/tmp", tfDir, string(uid)): errBoom},
 					},
 				},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockInit: func(ctx context.Context, cache bool, o ...terraform.InitOption) error { return nil },
 					}
@@ -421,7 +421,7 @@ func TestConnect(t *testing.T) {
 						errs: map[string]error{filepath.Join(tfDir, string(uid), tfConfig): errBoom},
 					},
 				},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockInit: func(ctx context.Context, cache bool, o ...terraform.InitOption) error { return nil },
 					}
@@ -462,7 +462,7 @@ func TestConnect(t *testing.T) {
 						errs: map[string]error{filepath.Join(tfDir, string(uid), "subdir", tfConfig): errBoom},
 					},
 				},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockInit: func(ctx context.Context, cache bool, o ...terraform.InitOption) error { return nil },
 					}
@@ -498,7 +498,7 @@ func TestConnect(t *testing.T) {
 						errs: map[string]error{filepath.Join(tfDir, string(uid), tfMain): errBoom},
 					},
 				},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockInit: func(ctx context.Context, cache bool, o ...terraform.InitOption) error { return nil },
 					}
@@ -528,7 +528,7 @@ func TestConnect(t *testing.T) {
 				},
 				usage: resource.TrackerFn(func(_ context.Context, _ resource.Managed) error { return nil }),
 				fs:    afero.Afero{Fs: afero.NewMemMapFs()},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{MockInit: func(_ context.Context, cache bool, _ ...terraform.InitOption) error { return errBoom }}
 				},
 			},
@@ -552,7 +552,7 @@ func TestConnect(t *testing.T) {
 				},
 				usage: resource.TrackerFn(func(_ context.Context, _ resource.Managed) error { return nil }),
 				fs:    afero.Afero{Fs: afero.NewMemMapFs()},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockInit:      func(ctx context.Context, cache bool, o ...terraform.InitOption) error { return nil },
 						MockWorkspace: func(_ context.Context, _ string) error { return errBoom },
@@ -578,7 +578,7 @@ func TestConnect(t *testing.T) {
 			},
 				usage: resource.TrackerFn(func(_ context.Context, _ resource.Managed) error { return nil }),
 				fs:    afero.Afero{Fs: afero.NewMemMapFs()},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockGenerateChecksum: func(ctx context.Context) (string, error) { return "", errBoom },
 					}
@@ -612,7 +612,7 @@ func TestConnect(t *testing.T) {
 			},
 				usage: resource.TrackerFn(func(_ context.Context, _ resource.Managed) error { return nil }),
 				fs:    afero.Afero{Fs: afero.NewMemMapFs()},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockGenerateChecksum: func(ctx context.Context) (string, error) { return tfChecksum, nil },
 						MockWorkspace:        func(_ context.Context, _ string) error { return nil },
@@ -648,7 +648,7 @@ func TestConnect(t *testing.T) {
 				},
 				usage: resource.TrackerFn(func(_ context.Context, _ resource.Managed) error { return nil }),
 				fs:    afero.Afero{Fs: afero.NewMemMapFs()},
-				terraform: func(_ string) tfclient {
+				terraform: func(_ string, _ ...string) tfclient {
 					return &MockTf{
 						MockInit:             func(ctx context.Context, cache bool, o ...terraform.InitOption) error { return nil },
 						MockGenerateChecksum: func(ctx context.Context) (string, error) { return tfChecksum, nil },
